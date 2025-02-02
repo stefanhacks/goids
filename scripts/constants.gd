@@ -1,0 +1,10 @@
+class_name Constants
+
+const NORMAL_SPEED = 150
+const PREDATOR_SPEED = 50
+
+const SEPARATION_RADIUS = 70
+const ALIGNMENT_RADIUS = 100
+const COHESION_RADIUS = 10
+
+const PREDATOR_RADIUS = 100

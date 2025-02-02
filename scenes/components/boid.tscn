@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://dpa5tro082qtk"]
+
+[ext_resource type="Script" path="res://scenes/components/boid.gd" id="1_10osq"]
+[ext_resource type="Texture2D" uid="uid://b5gywe422atip" path="res://assets/triangle.png" id="1_cl1rl"]
+
+[node name="Boid" type="Node2D"]
+script = ExtResource("1_10osq")
+normal_color = Color(0.996078, 0.737255, 0.333333, 1)
+mutated_color = Color(0.154251, 0.612081, 0.689548, 1)
+tracking_color = Color(0.941176, 0.258824, 0.341176, 1)
+
+[node name="ShadowRoot" type="Node2D" parent="."]
+position = Vector2(5, 16)
+
+[node name="Shadow" type="Sprite2D" parent="ShadowRoot"]
+self_modulate = Color(0, 0, 0, 0.152941)
+z_index = -1
+y_sort_enabled = true
+rotation = 1.5708
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_cl1rl")
+
+[node name="BodyRoot" type="Node2D" parent="."]
+
+[node name="Body" type="Sprite2D" parent="BodyRoot"]
+y_sort_enabled = true
+rotation = 1.5708
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_cl1rl")
