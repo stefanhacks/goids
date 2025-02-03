@@ -4,11 +4,14 @@ extends Node
 @export var target_area: Vector2 = Vector2(1050.0, 1050.0)
 
 const BOID = preload("res://scenes/components/boid.tscn")
+const PREDATOR_BOID = preload("res://scenes/components/predator_boid.tscn")
 var boids: Array[Boid] = []
 
 func _ready() -> void:
 	for i in range(boid_count):
-		var boid = BOID.instantiate()
+		var predator = (i + 1) % 40 == 0
+		
+		var boid = BOID.instantiate() if predator == false else PREDATOR_BOID.instantiate()
 		var rand_position = Vector2(
 			target_area.x * randf(), 
 			target_area.y * randf(),
@@ -19,8 +22,5 @@ func _ready() -> void:
 		boid.active_area = target_area
 		boid.position = rand_position
 		boid.name = "Boid%s" % i
-		
-		boid.tracking = i == 0
-		boid.predator = (i + 1) % 40 == 0
 		
 		add_child(boid)

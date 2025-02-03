@@ -2,23 +2,28 @@ class_name Boid
 extends Node2D
 
 @export var normal_color: Color = Color('febc55')
-@export var predator_color: Color = Color('279cb0')
+@export var targeted_color: Color = Color('f04257')
 @export var tracking_color: Color = Color('f04257')
 @export var testing = false
 
 @onready var shadow_root: Node2D = $ShadowRoot
 @onready var body_root: Node2D = $BodyRoot
 @onready var direction_line: Line2D = $DirectionLine
+@onready var splat_emitter: CPUParticles2D = $SplatEmitter
 
 var boids: Array[Boid] = []
 var direction: Vector2
 var active_area: Vector2 = Vector2.ONE * 1000
+var speed = Constants.BOID_SPEED
 
 var tracking = false
 var show_direction_line = false
 
 var predator = false
-var target: Boid
+var targeted = false:
+	set(value):
+		targeted = value
+		speed = Constants.BOID_FLEEING_SPEED if value == true else Constants.BOID_SPEED
 
 
 func _ready() -> void:
@@ -34,14 +39,11 @@ func _physics_process(delta: float) -> void:
 		return
 	
 	# Multiplied by arbitrary weights
-	if predator == true:
-		direction = direction + _seek()
-	else:
-		var separation = _separation() * 50
-		var alignment = _alignment() * 1
-		var cohesion = _cohesion() * 1
-	
-		direction = (direction + separation + alignment + cohesion).normalized()
+	var separation = _separation() * 50
+	var alignment = _alignment() * (1 if targeted == false else 0)
+	var cohesion = _cohesion() * (1 if targeted == false else 0)
+
+	direction = (direction + separation + alignment + cohesion).normalized()
 	
 	_track()
 	_update_direction_line()
@@ -49,25 +51,8 @@ func _physics_process(delta: float) -> void:
 	_wrap_around()
 
 
-func _track() -> void:
-	if tracking:
-		body_root.modulate = tracking_color
-	elif predator:
-		body_root.modulate = predator_color
-	else:
-		body_root.modulate = normal_color
-
-
-func _update_direction_line(point_to = direction) -> void:
-	if show_direction_line == true:
-		direction_line.modulate = body_root.modulate
-		direction_line.points[1] = point_to * 100
-		
-	direction_line.visible = show_direction_line
-
-
 # Returns weighted vector pointing average distant direction of close by boids.
-func _separation(boid_radius = Constants.SEPARATION_RADIUS, predator_radius = Constants.PREDATOR_RADIUS) -> Vector2:
+func _separation(min_distance = Constants.SEPARATION_DISTANCE, min_predator_distance = Constants.AVOID_PREDATOR_DISTANCE) -> Vector2:
 	var separation = Vector2.ZERO
 	
 	for boid in boids:
@@ -75,10 +60,10 @@ func _separation(boid_radius = Constants.SEPARATION_RADIUS, predator_radius = Co
 		if distance == 0:
 			continue
 		
-		if predator == false and boid.predator == true and predator_radius > distance:
+		if boid is PredatorBoid and distance < min_predator_distance:
 			var diff = (position - boid.position).normalized()
 			separation += diff * 500
-		elif boid_radius > distance:
+		elif distance < min_distance:
 			var diff = (position - boid.position).normalized()
 			separation += diff / distance
 			
@@ -86,7 +71,7 @@ func _separation(boid_radius = Constants.SEPARATION_RADIUS, predator_radius = Co
 
 
 # Returns normalized vector pointing towards average direction of close by boids.
-func _alignment(boid_radius = Constants.ALIGNMENT_RADIUS) -> Vector2:
+func _alignment(aligned_distance = Constants.ALIGNMENT_DISTANCE) -> Vector2:
 	var alignment = Vector2.ZERO
 	
 	var aligned_to = 0.0
@@ -96,7 +81,7 @@ func _alignment(boid_radius = Constants.ALIGNMENT_RADIUS) -> Vector2:
 		if boid == self:
 			continue
 		
-		if boid_radius > distance and distance > 0:
+		if 0 < distance and distance < aligned_distance:
 			aligned_to += 1.0
 			direction_sum += boid.direction
 	
@@ -107,14 +92,14 @@ func _alignment(boid_radius = Constants.ALIGNMENT_RADIUS) -> Vector2:
 
 
 # Returns normalized vector pointing towards center position of close by boids.
-func _cohesion(boid_radius = Constants.COHESION_RADIUS) -> Vector2:
+func _cohesion(grouping_distance = Constants.COHESION_DISTANCE) -> Vector2:
 	var cohesion = Vector2.ZERO
 	
 	var grouped_to = 0.0
 	var location_sum = Vector2.ZERO
 	for boid in boids:
 		var distance = boid.position.distance_to(position)
-		if boid_radius > distance and distance > 0:
+		if 0 < distance and distance < grouping_distance:
 			grouped_to += 1.0
 			location_sum += boid.position
 	
@@ -125,23 +110,15 @@ func _cohesion(boid_radius = Constants.COHESION_RADIUS) -> Vector2:
 		return Vector2.ZERO
 
 
-func _seek() -> Vector2:
-	return Vector2.ZERO
-
-
-func _move(delta: float) -> void:
-	var new_point = position + direction * 100.0
-	_rotate(new_point)
-	
-	var speed = Constants.PREDATOR_SPEED if predator else Constants.NORMAL_SPEED
-	
-	position.x += direction.x * delta * speed
-	position.y += direction.y * delta * speed
-
-
 func _rotate(new_point) -> void:
 	body_root.look_at(new_point)
 	shadow_root.rotation = body_root.rotation
+
+
+func _move(delta: float) -> void:
+	_rotate(position + direction * 100.0)
+	position.x += direction.x * delta * speed
+	position.y += direction.y * delta * speed
 
 
 func _wrap_around() -> void:
@@ -154,3 +131,28 @@ func _wrap_around() -> void:
 		position.y += active_area.y
 	elif(position.y > active_area.y):
 		position.y -= active_area.y
+
+
+func get_eaten() -> void:
+	splat_emitter.modulate = body_root.modulate
+	splat_emitter.emitting = true
+	body_root.visible = false
+	shadow_root.visible = false
+	splat_emitter.finished.connect(func(): queue_free())
+
+
+func _track() -> void:
+	if tracking:
+		body_root.modulate = tracking_color
+	elif targeted:
+		body_root.modulate = targeted_color
+	else:
+		body_root.modulate = normal_color
+
+
+func _update_direction_line(point_to = direction) -> void:
+	if show_direction_line == true:
+		direction_line.modulate = body_root.modulate
+		direction_line.points[1] = point_to * 100
+		
+	direction_line.visible = show_direction_line

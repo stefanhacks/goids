@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://dn8ovpie3xl64"]
+
+[ext_resource type="Script" path="res://scenes/components/predator_boid.gd" id="1_4n7jv"]
+[ext_resource type="Texture2D" uid="uid://b5gywe422atip" path="res://assets/triangle.png" id="2_jm8st"]
+
+[node name="PredatorBoid" type="Node2D"]
+script = ExtResource("1_4n7jv")
+
+[node name="ShadowRoot" type="Node2D" parent="."]
+position = Vector2(5, 16)
+
+[node name="Shadow" type="Sprite2D" parent="ShadowRoot"]
+self_modulate = Color(0, 0, 0, 0.152941)
+z_index = -1
+y_sort_enabled = true
+rotation = 1.5708
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_jm8st")
+
+[node name="BodyRoot" type="Node2D" parent="."]
+
+[node name="Body" type="Sprite2D" parent="BodyRoot"]
+y_sort_enabled = true
+rotation = 1.5708
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_jm8st")
+
+[node name="DirectionLine" type="Line2D" parent="."]
+visible = false
+points = PackedVector2Array(0, 0, 150, 0)
+width = 1.0
