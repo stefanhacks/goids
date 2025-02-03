@@ -4,37 +4,47 @@ extends Node2D
 @export var normal_color: Color = Color('febc55')
 @export var predator_color: Color = Color('279cb0')
 @export var tracking_color: Color = Color('f04257')
+@export var testing = false
 
 @onready var shadow_root: Node2D = $ShadowRoot
 @onready var body_root: Node2D = $BodyRoot
+@onready var direction_line: Line2D = $DirectionLine
 
 var boids: Array[Boid] = []
 var direction: Vector2
 var active_area: Vector2 = Vector2.ONE * 1000
 
-var predator = false
 var tracking = false
+var show_direction_line = false
+
+var predator = false
+var target: Boid
 
 
 func _ready() -> void:
+	if testing == true:
+		return
+	
+	show_direction_line = direction_line.visible
 	direction = Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)).normalized()
-	predator = randf_range(0, 1) < 0.1
 
 
 func _physics_process(delta: float) -> void:
-	_track()
+	if testing == true:
+		return
 	
-	# Arbitrary weights
-	if !predator:
-		var separation = _separation() * 2
-		var alignment = _alignment()
-		var cohesion = _cohesion() * 0
+	# Multiplied by arbitrary weights
+	if predator == true:
+		direction = direction + _seek()
+	else:
+		var separation = _separation() * 50
+		var alignment = _alignment() * 1
+		var cohesion = _cohesion() * 1
 	
 		direction = (direction + separation + alignment + cohesion).normalized()
 	
-	#if predator == true:
-		#_seek()
-	
+	_track()
+	_update_direction_line()
 	_move(delta)
 	_wrap_around()
 
@@ -48,63 +58,79 @@ func _track() -> void:
 		body_root.modulate = normal_color
 
 
-func _separation() -> Vector2:
+func _update_direction_line(point_to = direction) -> void:
+	if show_direction_line == true:
+		direction_line.modulate = body_root.modulate
+		direction_line.points[1] = point_to * 100
+		
+	direction_line.visible = show_direction_line
+
+
+# Returns weighted vector pointing average distant direction of close by boids.
+func _separation(boid_radius = Constants.SEPARATION_RADIUS, predator_radius = Constants.PREDATOR_RADIUS) -> Vector2:
 	var separation = Vector2.ZERO
 	
 	for boid in boids:
-		if boid == self:
+		var distance = boid.position.distance_to(position)
+		if distance == 0:
 			continue
 		
-		var distance = boid.position.distance_to(position)
-		if boid.predator == true and distance < Constants.PREDATOR_RADIUS:
+		if predator == false and boid.predator == true and predator_radius > distance:
 			var diff = (position - boid.position).normalized()
 			separation += diff * 500
-		elif distance < Constants.SEPARATION_RADIUS:
+		elif boid_radius > distance:
 			var diff = (position - boid.position).normalized()
 			separation += diff / distance
-		
-	
+			
 	return separation
 
 
-func _alignment() -> Vector2:
+# Returns normalized vector pointing towards average direction of close by boids.
+func _alignment(boid_radius = Constants.ALIGNMENT_RADIUS) -> Vector2:
 	var alignment = Vector2.ZERO
 	
 	var aligned_to = 0.0
 	var direction_sum = Vector2.ZERO
 	for boid in boids:
-		if boid != self and boid.position.distance_to(position) < Constants.ALIGNMENT_RADIUS:
+		var distance = boid.position.distance_to(position)
+		if boid == self:
+			continue
+		
+		if boid_radius > distance and distance > 0:
 			aligned_to += 1.0
 			direction_sum += boid.direction
 	
 	if aligned_to > 0.0:
-		alignment = (direction_sum / aligned_to).normalized()
+		alignment = (direction_sum / aligned_to)
 	
 	return alignment
 
 
-func _cohesion() -> Vector2:
+# Returns normalized vector pointing towards center position of close by boids.
+func _cohesion(boid_radius = Constants.COHESION_RADIUS) -> Vector2:
 	var cohesion = Vector2.ZERO
 	
 	var grouped_to = 0.0
 	var location_sum = Vector2.ZERO
 	for boid in boids:
-		if boid != self and boid.position.distance_to(position) < Constants.COHESION_RADIUS:
+		var distance = boid.position.distance_to(position)
+		if boid_radius > distance and distance > 0:
 			grouped_to += 1.0
 			location_sum += boid.position
 	
 	if grouped_to > 0.0:
 		cohesion = location_sum / grouped_to
-	
-	return cohesion
+		return position.direction_to(cohesion)
+	else:
+		return Vector2.ZERO
 
 
-func _seek() -> void:
-	pass
+func _seek() -> Vector2:
+	return Vector2.ZERO
 
 
 func _move(delta: float) -> void:
-	var new_point = position + direction * 100
+	var new_point = position + direction * 100.0
 	_rotate(new_point)
 	
 	var speed = Constants.PREDATOR_SPEED if predator else Constants.NORMAL_SPEED

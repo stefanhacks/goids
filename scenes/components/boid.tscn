@@ -6,7 +6,6 @@
 [node name="Boid" type="Node2D"]
 script = ExtResource("1_10osq")
 normal_color = Color(0.996078, 0.737255, 0.333333, 1)
-mutated_color = Color(0.154251, 0.612081, 0.689548, 1)
 tracking_color = Color(0.941176, 0.258824, 0.341176, 1)
 
 [node name="ShadowRoot" type="Node2D" parent="."]
@@ -27,3 +26,8 @@ y_sort_enabled = true
 rotation = 1.5708
 scale = Vector2(0.4, 0.4)
 texture = ExtResource("1_cl1rl")
+
+[node name="DirectionLine" type="Line2D" parent="."]
+visible = false
+points = PackedVector2Array(0, 0, 150, 0)
+width = 1.0

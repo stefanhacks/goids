@@ -1,6 +1,6 @@
 extends Node
 
-@export var boid_count = 60
+@export var boid_count = 80
 @export var target_area: Vector2 = Vector2(1050.0, 1050.0)
 
 const BOID = preload("res://scenes/components/boid.tscn")
@@ -21,5 +21,6 @@ func _ready() -> void:
 		boid.name = "Boid%s" % i
 		
 		boid.tracking = i == 0
+		boid.predator = (i + 1) % 40 == 0
 		
 		add_child(boid)

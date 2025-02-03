@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Godoids"
+config/name="Goids"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -27,6 +27,10 @@ folder_colors={
 "res://scripts/": "purple",
 "res://themes/": "yellow"
 }
+
+[physics]
+
+2d/default_gravity=0.0
 
 [rendering]
 
