@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://cusw40uxsynli"]
+
+[ext_resource type="Script" path="res://scenes/tests/test_move_and_wrap.gd" id="1_4kf8u"]
+[ext_resource type="PackedScene" uid="uid://dpa5tro082qtk" path="res://scenes/components/boid.tscn" id="2_ys567"]
+
+[node name="TestMoveAndWrap" type="Node2D" node_paths=PackedStringArray("boids")]
+script = ExtResource("1_4kf8u")
+boids = [NodePath("Boid"), NodePath("Boid2")]
+
+[node name="Boid" parent="." instance=ExtResource("2_ys567")]
+position = Vector2(510, 510)
+testing = true
+
+[node name="Boid2" parent="." instance=ExtResource("2_ys567")]
+position = Vector2(490, 490)
+testing = true
