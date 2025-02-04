@@ -15,8 +15,6 @@ var active_area: Vector2 = Vector2.ONE * 1000
 var speed = Constants.BOID_SPEED
 
 var tracking = false
-
-var predator = false
 var targeted = false:
 	set(value):
 		targeted = value
@@ -140,13 +138,14 @@ func track() -> void:
 
 
 func get_eaten() -> void:
+	splat_emitter.modulate = body_root.modulate
 	got_eaten.emit()
 	splat()
-	splat_emitter.finished.connect(func(): queue_free())
+	var boid = self
+	splat_emitter.finished.connect(func(): boid.queue_free())
 	body_root.visible = false
 	shadow_root.visible = false
 
 
 func splat() -> void:
-	splat_emitter.modulate = body_root.modulate
 	splat_emitter.emitting = true

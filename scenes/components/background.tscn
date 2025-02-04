@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bxjnm5b3cx4v7"]
+[gd_scene load_steps=3 format=3 uid="uid://bguqqdgk4edue"]
 
-[ext_resource type="Shader" path="res://scripts/2d_procedural_water.gdshader" id="1_epbws"]
+[ext_resource type="Shader" path="res://scripts/2d_procedural_water.gdshader" id="1_bkoun"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_wuqxe"]
-shader = ExtResource("1_epbws")
+shader = ExtResource("1_bkoun")
 shader_parameter/OCTAVE = 5
 shader_parameter/mulscale = 50.0
 shader_parameter/height = 0.8
@@ -14,7 +14,7 @@ shader_parameter/WATER_COL = Color(0.0266964, 0.337094, 0.791101, 1)
 shader_parameter/WATER2_COL = Color(0.0239819, 0.288883, 0.656382, 1)
 shader_parameter/FOAM_COL = Color(0.430733, 0.644559, 0.996744, 1)
 
-[node name="Sea" type="ColorRect"]
+[node name="Background" type="ColorRect"]
 z_index = -5
 y_sort_enabled = true
 material = SubResource("ShaderMaterial_wuqxe")

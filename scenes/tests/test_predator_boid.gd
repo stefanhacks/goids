@@ -12,7 +12,6 @@ func _ready() -> void:
 		
 		if boid.testing == true:
 			predator = boid
-			boid.predator = true
 			boid.tracking = true
 			boid._track()
 			predator.direction = Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)).normalized()

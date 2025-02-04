@@ -35,10 +35,11 @@ func _handle_hunger(delta: float, biting_distance = Constants.BITING_DISTANCE) -
 	if (target != null):
 		var distance = position.distance_to(target.position)
 		if distance < biting_distance:
-			target.get_eaten()
 			var index = boids.find(target)
-			boids.pop_at(index)
+			var boid = boids.pop_at(index)
 			target = null
+			
+			boid.get_eaten()
 			hunger = Constants.PREDATOR_MAX_HUNGER
 			speed = Constants.PREDATOR_SPEED
 
@@ -46,13 +47,13 @@ func _handle_hunger(delta: float, biting_distance = Constants.BITING_DISTANCE) -
 # Returns normalized vector pointing towards target if exists.
 func _hunt() -> Vector2:
 	if target == null:
-		var targets = boids.filter(func(boid): return boid is not PredatorBoid)
+		var targets = boids.filter(func(boid): return boid is not PredatorBoid and boid.targeted == false)
 		if targets.size() == 0:
 			return Vector2.ZERO
 			
-		var target_index = randi_range(0, targets.size())
+		var target_index = randi_range(0, targets.size() - 1)
 		var size = targets.size()
-		target = boids[target_index]
+		target = targets[target_index]
 		target.targeted = true
 	
 	var wrapped_x = target.position.x + active_area.x * (1 if target.position.x < position.x else -1)
