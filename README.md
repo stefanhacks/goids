@@ -7,12 +7,13 @@
 ---
 
 ### What is this:
-- Implementation of Crag Raynolds' Boids algorithm - separation, alignment, cohesion.
+- Actors wrap around a defined area while moving, randomly to begin with.
+- Crag Raynolds' Boids algorithm breaks down individual behaviors in three rules.
 - Separation defines a vector pointing away from neighbors.
 - Alignment defines a vector aligned with neighbors' moving direction.
 - Cohesion defines a vector pointing towards neighbor average location.
 - Group management exists only in the form of spawning more actors.
-- Also adds predators to periodically destroy boids.
+- Adds predators to periodically destroy boids.
 
 ### Heavily inspired by:
 - [Useless Game Dev's "Just Boids" video](https://www.youtube.com/watch?v=6dJlhv3hfQ0)
