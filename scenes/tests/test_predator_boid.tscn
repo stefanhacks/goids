@@ -14,16 +14,12 @@ testing = true
 
 [node name="Boid2" parent="." instance=ExtResource("3_ciada")]
 position = Vector2(480, 480)
-tracking_color = Color(0.704559, 0.795972, 0.541092, 1)
 
 [node name="Boid3" parent="." instance=ExtResource("3_ciada")]
 position = Vector2(520, 520)
-tracking_color = Color(0.704559, 0.795972, 0.541092, 1)
 
 [node name="Boid4" parent="." instance=ExtResource("3_ciada")]
 position = Vector2(520, 480)
-tracking_color = Color(0.704559, 0.795972, 0.541092, 1)
 
 [node name="Boid5" parent="." instance=ExtResource("3_ciada")]
 position = Vector2(480, 520)
-tracking_color = Color(0.704559, 0.795972, 0.541092, 1)

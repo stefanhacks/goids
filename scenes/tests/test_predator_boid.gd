@@ -22,7 +22,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	predator._handle_hunger(delta)
 	if predator.hunger == 0:
-		predator.direction = predator._seek()
+		predator.direction = predator._hunt()
 		predator.speed = Constants.PREDATOR_HUNTING_SPEED
 		
 		if predator.tracking == true:

@@ -23,7 +23,7 @@ func _physics_process(delta: float) -> void:
 	_handle_hunger(delta)
 	if (hunger == 0):
 		speed = Constants.PREDATOR_HUNTING_SPEED
-		direction = (direction + _seek()).normalized()
+		direction = (direction + _hunt()).normalized()
 	
 	_track()
 	_update_direction_line()
@@ -45,9 +45,12 @@ func _handle_hunger(delta: float, biting_distance = Constants.BITING_DISTANCE) -
 
 
 # Returns normalized vector pointing towards target if exists.
-func _seek() -> Vector2:
+func _hunt() -> Vector2:
 	if target == null:
 		var targets = boids.filter(func(boid): return boid is not PredatorBoid)
+		if targets.size() == 0:
+			return Vector2.ZERO
+			
 		var target_index = randi_range(0, targets.size())
 		var size = targets.size()
 		target = boids[target_index]

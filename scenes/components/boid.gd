@@ -25,6 +25,8 @@ var targeted = false:
 		targeted = value
 		speed = Constants.BOID_FLEEING_SPEED if value == true else Constants.BOID_SPEED
 
+signal got_eaten
+
 
 func _ready() -> void:
 	if testing == true:
@@ -45,7 +47,7 @@ func _physics_process(delta: float) -> void:
 
 	direction = (direction + separation + alignment + cohesion).normalized()
 	
-	_track()
+	track()
 	_update_direction_line()
 	_move(delta)
 	_wrap_around()
@@ -133,15 +135,15 @@ func _wrap_around() -> void:
 		position.y -= active_area.y
 
 
-func get_eaten() -> void:
-	splat_emitter.modulate = body_root.modulate
-	splat_emitter.emitting = true
-	body_root.visible = false
-	shadow_root.visible = false
-	splat_emitter.finished.connect(func(): queue_free())
+func _update_direction_line(point_to = direction) -> void:
+	if show_direction_line == true:
+		direction_line.modulate = body_root.modulate
+		direction_line.points[1] = point_to * 100
+		
+	direction_line.visible = show_direction_line
 
 
-func _track() -> void:
+func track() -> void:
 	if tracking:
 		body_root.modulate = tracking_color
 	elif targeted:
@@ -150,9 +152,14 @@ func _track() -> void:
 		body_root.modulate = normal_color
 
 
-func _update_direction_line(point_to = direction) -> void:
-	if show_direction_line == true:
-		direction_line.modulate = body_root.modulate
-		direction_line.points[1] = point_to * 100
-		
-	direction_line.visible = show_direction_line
+func get_eaten() -> void:
+	got_eaten.emit()
+	splat()
+	splat_emitter.finished.connect(func(): queue_free())
+	body_root.visible = false
+	shadow_root.visible = false
+
+
+func splat() -> void:
+	splat_emitter.modulate = body_root.modulate
+	splat_emitter.emitting = true
