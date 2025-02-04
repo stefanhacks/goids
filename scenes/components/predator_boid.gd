@@ -1,7 +1,7 @@
 class_name PredatorBoid
 extends Boid
 
-@export var predator_color: Color = Color('279cb0')
+@export var predator_color: Color = Color('3ed2b0')
 
 var target: Boid
 var hunger = Constants.PREDATOR_MAX_HUNGER
@@ -26,7 +26,6 @@ func _physics_process(delta: float) -> void:
 		direction = (direction + _hunt()).normalized()
 	
 	_track()
-	_update_direction_line()
 	_move(delta)
 	_wrap_around()
 

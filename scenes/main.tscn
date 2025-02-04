@@ -1,8 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://dbxj31vvh468m"]
+[gd_scene load_steps=3 format=3 uid="uid://dbxj31vvh468m"]
 
+[ext_resource type="PackedScene" uid="uid://bxjnm5b3cx4v7" path="res://scenes/components/sea.tscn" id="1_w6x63"]
 [ext_resource type="PackedScene" uid="uid://dvyeyhtbdg2r2" path="res://scenes/components/boids_manager.tscn" id="2_8517q"]
 
 [node name="Node2D" type="Node2D"]
+
+[node name="Sea" parent="." instance=ExtResource("1_w6x63")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 offset = Vector2(15, 15)
