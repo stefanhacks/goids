@@ -4,7 +4,6 @@
 
 # Godot Boid's Implementation
 
----
 
 ### What is this:
 - Actors wrap around a defined area while moving, randomly to begin with.
@@ -23,4 +22,4 @@
 - [Daniel Shiffman Flocking Implementation @ processing.org](https://processing.org/examples/flocking.html)
 
 ### VFX:
-- [Flytrap's Shader used on the Background](https://godotshaders.com/shader/perlin-procedural-water/).
+- [Flytrap's Shader used for the Background](https://godotshaders.com/shader/perlin-procedural-water/)
