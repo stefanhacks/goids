@@ -14,6 +14,7 @@
 - Cohesion defines a vector pointing towards neighbor average location.
 - Group management exists only in the form of spawning more actors.
 - Adds predators to periodically destroy boids.
+- Predators calculate the shortest route through, considering wrapping as an option.
 
 ### Heavily inspired by:
 - [Useless Game Dev's "Just Boids" video](https://www.youtube.com/watch?v=6dJlhv3hfQ0)
