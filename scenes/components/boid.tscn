@@ -7,9 +7,11 @@
 offsets = PackedFloat32Array(0, 0.809783, 1)
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.88587, 1, 1, 1, 0)
 
-[node name="Boid" type="Node2D"]
+[node name="Boid" type="Node2D" node_paths=PackedStringArray("shadow_root", "body_root", "splat_emitter")]
 script = ExtResource("1_10osq")
-tracking_color = Color(0.704559, 0.795972, 0.541092, 1)
+shadow_root = NodePath("ShadowRoot")
+body_root = NodePath("BodyRoot")
+splat_emitter = NodePath("SplatEmitter")
 
 [node name="ShadowRoot" type="Node2D" parent="."]
 position = Vector2(5, 16)

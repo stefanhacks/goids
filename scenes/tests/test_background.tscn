@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://bshkmmhsekyuh"]
+
+[ext_resource type="PackedScene" uid="uid://bxjnm5b3cx4v7" path="res://scenes/components/background.tscn" id="1_aeqjd"]
+[ext_resource type="PackedScene" uid="uid://dpa5tro082qtk" path="res://scenes/components/boid.tscn" id="1_fho22"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Sea" parent="." instance=ExtResource("1_aeqjd")]
+anchors_preset = 0
+
+[node name="Boid" parent="." instance=ExtResource("1_fho22")]
+position = Vector2(500, 500)
+
+[node name="Shadow" parent="Boid/ShadowRoot" index="0"]
+z_index = 1
+
+[node name="Body" parent="Boid/BodyRoot" index="0"]
+z_index = 2
+
+[editable path="Boid"]

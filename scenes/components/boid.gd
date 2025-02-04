@@ -3,13 +3,11 @@ extends Node2D
 
 @export var normal_color: Color = Color('febc55')
 @export var targeted_color: Color = Color('f04257')
-@export var tracking_color: Color = Color('f04257')
+@export var tracking_color: Color = Color('b276ff')
 @export var testing = false
-
-@onready var shadow_root: Node2D = $ShadowRoot
-@onready var body_root: Node2D = $BodyRoot
-@onready var direction_line: Line2D = $DirectionLine
-@onready var splat_emitter: CPUParticles2D = $SplatEmitter
+@export var shadow_root: Node2D
+@export var body_root: Node2D
+@export var splat_emitter: CPUParticles2D
 
 var boids: Array[Boid] = []
 var direction: Vector2
@@ -17,9 +15,6 @@ var active_area: Vector2 = Vector2.ONE * 1000
 var speed = Constants.BOID_SPEED
 
 var tracking = false
-var show_direction_line = false
-
-var predator = false
 var targeted = false:
 	set(value):
 		targeted = value
@@ -32,7 +27,6 @@ func _ready() -> void:
 	if testing == true:
 		return
 	
-	show_direction_line = direction_line.visible
 	direction = Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)).normalized()
 
 
@@ -41,14 +35,13 @@ func _physics_process(delta: float) -> void:
 		return
 	
 	# Multiplied by arbitrary weights
-	var separation = _separation() * 50
+	var separation = _separation() * 30
 	var alignment = _alignment() * (1 if targeted == false else 0)
 	var cohesion = _cohesion() * (1 if targeted == false else 0)
 
 	direction = (direction + separation + alignment + cohesion).normalized()
 	
 	track()
-	_update_direction_line()
 	_move(delta)
 	_wrap_around()
 
@@ -135,14 +128,6 @@ func _wrap_around() -> void:
 		position.y -= active_area.y
 
 
-func _update_direction_line(point_to = direction) -> void:
-	if show_direction_line == true:
-		direction_line.modulate = body_root.modulate
-		direction_line.points[1] = point_to * 100
-		
-	direction_line.visible = show_direction_line
-
-
 func track() -> void:
 	if tracking:
 		body_root.modulate = tracking_color
@@ -153,13 +138,14 @@ func track() -> void:
 
 
 func get_eaten() -> void:
+	splat_emitter.modulate = body_root.modulate
 	got_eaten.emit()
 	splat()
-	splat_emitter.finished.connect(func(): queue_free())
+	var boid = self
+	splat_emitter.finished.connect(func(): boid.queue_free())
 	body_root.visible = false
 	shadow_root.visible = false
 
 
 func splat() -> void:
-	splat_emitter.modulate = body_root.modulate
 	splat_emitter.emitting = true

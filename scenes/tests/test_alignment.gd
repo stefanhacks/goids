@@ -16,7 +16,6 @@ func _ready() -> void:
 		if tracking_boid == null:
 			tracking_boid = boid
 			boids_zero = boid.position
-			boid.show_direction_line = true
 			boid.tracking = true
 			boid._track()
 		else:
@@ -27,7 +26,6 @@ func _physics_process(delta: float) -> void:
 	for boid in boids:
 		if boid.tracking == true:
 			var alignment_point = boid._alignment(500)
-			boid._update_direction_line(alignment_point)
 			boid._rotate(boid.position + alignment_point)
 			print(boid.name, ": ", alignment_point)
 		else:

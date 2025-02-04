@@ -9,7 +9,6 @@ func _ready() -> void:
 	for boid in boids:
 		boid.boids = boids
 		if tracking_boid == null:
-			boid.show_direction_line = true
 			tracking_boid = boid
 			boid.tracking = true
 			boid._track()
@@ -21,7 +20,6 @@ func _physics_process(delta: float) -> void:
 		
 		if boid.tracking == true:
 			print(boid.name, ": ", boid.direction)
-			boid._update_direction_line()
 		
 		boid._move(delta)
 		boid._wrap_around()

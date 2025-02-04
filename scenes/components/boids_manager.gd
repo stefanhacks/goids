@@ -1,6 +1,6 @@
 extends Node
 
-@export var boid_count = 80
+@export var boid_count = 60
 @export var target_area: Vector2 = Vector2(1050.0, 1050.0)
 
 const BOID = preload("res://scenes/components/boid.tscn")
@@ -9,7 +9,7 @@ var boids: Array[Boid] = []
 
 func _ready() -> void:
 	for i in range(boid_count):
-		var boid = _make_boid((i + 1) % 40 == 0)
+		var boid = _make_boid((i + 1) % 30 == 0)
 		add_child(boid)
 		boid.got_eaten.connect(_timer_to_respawn)
 
