@@ -2,10 +2,10 @@
   <img src="https://github.com/user-attachments/assets/7b24ff45-b532-43d7-98b2-c44b41aec306" />
 </p>
 
-# Godot Boid's Implementation
+# Boids in Godot
 
 
-### What is this:
+### What this is:
 - Actors wrap around a defined area while moving, randomly to begin with.
 - Crag Raynolds' Boids algorithm breaks down individual behaviors in three rules.
 - Separation defines a vector pointing away from neighbors.
