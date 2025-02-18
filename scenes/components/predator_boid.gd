@@ -52,7 +52,6 @@ func _hunt() -> Vector2:
 			return Vector2.ZERO
 			
 		var target_index = randi_range(0, targets.size() - 1)
-		var size = targets.size()
 		target = targets[target_index]
 		target.targeted = true
 	
